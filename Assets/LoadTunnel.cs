@@ -4,24 +4,32 @@ using UnityEngine;
 
 public class LoadTunnel : MonoBehaviour
 {
-    public Texture2D texture;
-    const int tunnelMax = 16;
-    [SerializeField] Sprite[] imgTunnel = new Sprite[tunnelMax];
+	const int tunnelMax = 16;
+	[SerializeField] Sprite[] imgTunnel = new Sprite[tunnelMax];
+	[SerializeField] GameObject maptiles;
 
+	// Start is called before the first frame update
+	void Start()
+	{
+		if (imgTunnel == null)
+			imgTunnel = Resources.LoadAll<Sprite>("./Assets/Graphics/Tunnel/tunnel.png");
+	}
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        if (texture == null)
-            texture = Resources.Load("./image/Null.png") as Texture2D;
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        GameObject images = GameObject.Find("Map");
-        Sprite sprite = Sprite.Create(texture,new Rect(0,0,32,32),new Vector2(0.0f,0.0f));
-        images.GetComponent<SpriteRenderer>().sprite = sprite;
-    }
+	// Update is called once per frame
+	void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.LeftControl))
+		{
+			GameValue value = new GameValue();
+			for (int y = 0; y < value.getHeight(); ++y)
+			{
+				for (int x = 0; x < value.getWidth(); ++x)
+				{
+					maptiles.GetComponent<SpriteRenderer>().sprite = imgTunnel[value.getTunnleNum()];
+					Instantiate(maptiles, new Vector3(x * 0.3f, y * 0.3f, 0), Quaternion.identity);
+					value.incTunnelNum(1);
+				}
+			}
+		}
+	}
 }
